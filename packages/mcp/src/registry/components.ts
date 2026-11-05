@@ -206,6 +206,74 @@ export const CHRONO_COMPONENTS: Record<string, ComponentDoc> = {
       },
     ],
   },
+  Sidebar: {
+    name: 'Sidebar',
+    category: 'Layout',
+    description: 'Sistema integral de barra lateral colapsable (con atajo Ctrl+B / Cmd+B), iconos compactos, tooltips automáticos y soporte de badges.',
+    importStatement: "import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, useSidebar } from '@chronosoft/ui';",
+    props: [
+      { name: 'collapsible', type: "'icon' | 'offcanvas'", defaultValue: "'icon'", description: 'Modo de colapso: mostrar solo iconos o esconder completamente.' },
+      { name: 'defaultOpen', type: 'boolean', defaultValue: 'true', description: 'Estado inicial expandido/colapsado en SidebarProvider.' },
+    ],
+    bestPractices: {
+      dos: [
+        'Envuelve el layout principal en <SidebarProvider>.',
+        'Usa SidebarTrigger en el Header para que el usuario pueda alternar la visibilidad.',
+        'Provee el prop tooltip="Nombre" en <SidebarMenuButton> para que al colapsar se muestre el tooltip.',
+      ],
+      donts: ['No anides sidebars dentro de sidebars.'],
+    },
+    examples: [
+      {
+        title: 'Sidebar estándar de aplicación',
+        code: `<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader>
+      <div className="font-bold text-chrono-primary">Chronosoft</div>
+    </SidebarHeader>
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Navegación</SidebarGroupLabel>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton isActive icon={<LayoutDashboard className="h-4 w-4" />} tooltip="Dashboard">
+              Dashboard
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+    </SidebarContent>
+  </Sidebar>
+  <main className="flex-1 p-6">Contenido</main>
+</SidebarProvider>`,
+      },
+    ],
+  },
+  Breadcrumb: {
+    name: 'Breadcrumb',
+    category: 'Layout',
+    description: 'Navegación jerárquica tipo migas de pan para indicar la ubicación del usuario en la estructura de la aplicación.',
+    importStatement: "import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@chronosoft/ui';",
+    props: [],
+    bestPractices: {
+      dos: ['Colócalo en la parte superior izquierda del Header o antes del título de la página.'],
+      donts: ['El último elemento debe ser siempre <BreadcrumbPage> (no clickeable).'],
+    },
+    examples: [
+      {
+        title: 'Miga de pan de proyecto',
+        code: `<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem><BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink></BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem><BreadcrumbLink href="/proyectos">Proyectos</BreadcrumbLink></BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem><BreadcrumbPage>Chronosoft UI</BreadcrumbPage></BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>`,
+      },
+    ],
+  },
   StatCard: {
     name: 'StatCard',
     category: 'Data Display',

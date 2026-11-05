@@ -7,6 +7,156 @@ export interface RecipeDoc {
 }
 
 export const CHRONO_RECIPES: Record<string, RecipeDoc> = {
+  'full-app-shell': {
+    name: 'full-app-shell',
+    title: 'Arquitectura Completa de Aplicación (Sidebar + Header con Breadcrumb + Main View)',
+    description: 'La estructura de layout estándar para aplicaciones web SaaS de Chronosoft, con barra lateral colapsable, migas de pan y menú de usuario.',
+    componentsUsed: ['SidebarProvider', 'Sidebar', 'SidebarHeader', 'SidebarContent', 'SidebarMenu', 'SidebarMenuItem', 'SidebarMenuButton', 'SidebarTrigger', 'AppHeader', 'Breadcrumb', 'Avatar', 'Badge'],
+    code: `import React, { useState } from 'react';
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger,
+  AppHeader,
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  Badge,
+  Avatar,
+  AvatarFallback,
+} from '@chronosoft/ui';
+import { LayoutDashboard, Users, FileText, Settings, ShieldCheck } from 'lucide-react';
+
+export function AppShell() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+
+  return (
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex min-h-screen w-full">
+        {/* Collapsible Sidebar */}
+        <Sidebar collapsible="icon">
+          <SidebarHeader>
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-chrono-primary flex items-center justify-center text-white font-bold">
+                C
+              </div>
+              <span className="font-bold text-sm tracking-tight">Chronosoft</span>
+            </div>
+          </SidebarHeader>
+
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={activeTab === 'dashboard'}
+                    onClick={() => setActiveTab('dashboard')}
+                    icon={<LayoutDashboard className="h-4 w-4" />}
+                    tooltip="Dashboard"
+                  >
+                    Dashboard
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={activeTab === 'users'}
+                    onClick={() => setActiveTab('users')}
+                    icon={<Users className="h-4 w-4" />}
+                    tooltip="Usuarios"
+                    badge={<Badge variant="secondary" className="text-[10px]">12</Badge>}
+                  >
+                    Usuarios
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={activeTab === 'reports'}
+                    onClick={() => setActiveTab('reports')}
+                    icon={<FileText className="h-4 w-4" />}
+                    tooltip="Reportes"
+                  >
+                    Reportes
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+
+            <SidebarGroup>
+              <SidebarGroupLabel>Configuración</SidebarGroupLabel>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={activeTab === 'settings'}
+                    onClick={() => setActiveTab('settings')}
+                    icon={<Settings className="h-4 w-4" />}
+                    tooltip="Ajustes"
+                  >
+                    Ajustes
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+          </SidebarContent>
+
+          <SidebarFooter>
+            <div className="flex items-center gap-3">
+              <Avatar status="online" className="h-8 w-8">
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col truncate">
+                <span className="text-xs font-semibold">Jeaan Dev</span>
+                <span className="text-[10px] text-slate-400">Admin</span>
+              </div>
+            </div>
+          </SidebarFooter>
+        </Sidebar>
+
+        {/* Content Area */}
+        <div className="flex flex-1 flex-col overflow-hidden">
+          {/* Header with SidebarTrigger & Breadcrumb */}
+          <AppHeader
+            brand={
+              <div className="flex items-center gap-3">
+                <SidebarTrigger />
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href="#">Plataforma</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="capitalize">{activeTab}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+            }
+            user={{ name: 'Jeaan Dev', email: 'jeaan@chronosoft.com' }}
+            notificationsCount={2}
+          />
+
+          <main className="flex-1 p-6 overflow-y-auto">
+            <h1 className="text-2xl font-bold capitalize mb-4">{activeTab}</h1>
+            <p className="text-slate-500 text-sm">Vista dinámica renderizada con Chronosoft UI.</p>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+}`,
+  },
   'data-table-with-filters': {
     name: 'data-table-with-filters',
     title: 'Tabla de Datos Empresarial con Barra de Filtros y Rango de Fechas',

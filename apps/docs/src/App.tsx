@@ -53,6 +53,23 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
+  SidebarProvider,
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger,
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from '@chronosoft/ui';
 import {
   Sparkles,
@@ -74,6 +91,12 @@ import {
   Info,
   HelpCircle,
   Settings,
+  LayoutDashboard,
+  FolderKanban,
+  FileText,
+  ShieldCheck,
+  CreditCard,
+  Layers,
 } from 'lucide-react';
 
 export function App() {
@@ -97,6 +120,9 @@ export function App() {
     { id: '1', label: 'Rol', value: 'Ingeniero' },
     { id: '2', label: 'Estado', value: 'Activo' },
   ]);
+
+  // Demo sidebar state
+  const [activeNav, setActiveNav] = useState('dashboard');
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -229,6 +255,7 @@ export function App() {
           <Tabs defaultValue="feedback" className="space-y-6">
             <div className="flex items-center justify-between border-b border-chrono-border pb-3">
               <TabsList>
+                <TabsTrigger value="sidebars">Sidebars & Layout 🧭</TabsTrigger>
                 <TabsTrigger value="feedback">Feedback & Toasts 🔔</TabsTrigger>
                 <TabsTrigger value="forms">Formularios & Fechas</TabsTrigger>
                 <TabsTrigger value="filters">Filtros & Tablas</TabsTrigger>
@@ -238,6 +265,175 @@ export function App() {
                 Totalmente compatible con React 19
               </span>
             </div>
+
+            {/* TAB: SIDEBARS & APP SHELL */}
+            <TabsContent value="sidebars" className="space-y-6">
+              <Card className="overflow-hidden border-chrono-border shadow-md">
+                <CardHeader className="bg-slate-50/50 dark:bg-slate-900/40 border-b border-chrono-border">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <CardTitle>Entorno de Aplicación Completo (App Shell)</CardTitle>
+                      <CardDescription>
+                        Sidebar colapsable con atajo <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[11px] font-mono">Ctrl+B</kbd> o botón, tooltips flotantes en modo icono y Breadcrumb en el header
+                      </CardDescription>
+                    </div>
+                    <Badge variant="accent" dot>Interactivo en vivo</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {/* Embedded mini app layout */}
+                  <div className="h-[480px] flex rounded-b-xl overflow-hidden border-t border-chrono-border bg-chrono-bg">
+                    <SidebarProvider defaultOpen={true}>
+                      <Sidebar collapsible="icon" className="h-full border-r border-chrono-border">
+                        <SidebarHeader>
+                          <div className="flex items-center gap-2.5 overflow-hidden">
+                            <div className="h-8 w-8 rounded-lg bg-chrono-primary flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
+                              C
+                            </div>
+                            <div className="flex flex-col truncate">
+                              <span className="font-bold text-xs tracking-tight">Chronosoft</span>
+                              <span className="text-[10px] text-slate-400">Enterprise</span>
+                            </div>
+                          </div>
+                        </SidebarHeader>
+
+                        <SidebarContent>
+                          <SidebarGroup>
+                            <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
+                            <SidebarMenu>
+                              <SidebarMenuItem>
+                                <SidebarMenuButton
+                                  isActive={activeNav === 'dashboard'}
+                                  onClick={() => setActiveNav('dashboard')}
+                                  icon={<LayoutDashboard className="h-4 w-4" />}
+                                  tooltip="Dashboard Principal"
+                                >
+                                  Dashboard
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                              <SidebarMenuItem>
+                                <SidebarMenuButton
+                                  isActive={activeNav === 'proyectos'}
+                                  onClick={() => setActiveNav('proyectos')}
+                                  icon={<FolderKanban className="h-4 w-4" />}
+                                  tooltip="Gestor de Proyectos"
+                                  badge={<Badge variant="secondary" className="text-[10px] px-1.5 py-0">8</Badge>}
+                                >
+                                  Proyectos
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                              <SidebarMenuItem>
+                                <SidebarMenuButton
+                                  isActive={activeNav === 'documentos'}
+                                  onClick={() => setActiveNav('documentos')}
+                                  icon={<FileText className="h-4 w-4" />}
+                                  tooltip="Documentación"
+                                >
+                                  Documentos
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                            </SidebarMenu>
+                          </SidebarGroup>
+
+                          <SidebarGroup>
+                            <SidebarGroupLabel>Administración</SidebarGroupLabel>
+                            <SidebarMenu>
+                              <SidebarMenuItem>
+                                <SidebarMenuButton
+                                  isActive={activeNav === 'facturacion'}
+                                  onClick={() => setActiveNav('facturacion')}
+                                  icon={<CreditCard className="h-4 w-4" />}
+                                  tooltip="Facturación y Planes"
+                                >
+                                  Facturación
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                              <SidebarMenuItem>
+                                <SidebarMenuButton
+                                  isActive={activeNav === 'seguridad'}
+                                  onClick={() => setActiveNav('seguridad')}
+                                  icon={<ShieldCheck className="h-4 w-4" />}
+                                  tooltip="Auditoría de Seguridad"
+                                >
+                                  Seguridad
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                            </SidebarMenu>
+                          </SidebarGroup>
+                        </SidebarContent>
+
+                        <SidebarFooter>
+                          <div className="flex items-center gap-2 overflow-hidden w-full">
+                            <div className="h-7 w-7 rounded-full bg-chrono-primary/10 text-chrono-primary flex items-center justify-center font-bold text-xs shrink-0">
+                              JD
+                            </div>
+                            <div className="flex flex-col truncate">
+                              <span className="text-xs font-semibold">Jeaan Dev</span>
+                              <span className="text-[10px] text-slate-400">Admin</span>
+                            </div>
+                          </div>
+                        </SidebarFooter>
+                      </Sidebar>
+
+                      {/* Right Panel */}
+                      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+                        {/* Sub-header with trigger & breadcrumb */}
+                        <div className="h-14 border-b border-chrono-border px-4 flex items-center justify-between bg-chrono-card/50">
+                          <div className="flex items-center gap-3">
+                            <SidebarTrigger />
+                            <Breadcrumb>
+                              <BreadcrumbList>
+                                <BreadcrumbItem>
+                                  <BreadcrumbLink href="#">App</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                  <BreadcrumbLink href="#">Plataforma</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                  <BreadcrumbPage className="capitalize">{activeNav}</BreadcrumbPage>
+                                </BreadcrumbItem>
+                              </BreadcrumbList>
+                            </Breadcrumb>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              Exportar
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* View Content */}
+                        <div className="flex-1 p-6 overflow-y-auto space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-bold capitalize text-chrono-fg">
+                              Sección: {activeNav}
+                            </h3>
+                            <Badge variant="success" dot>Sincronizado</Badge>
+                          </div>
+                          <p className="text-xs text-slate-500">
+                            Prueba hacer clic en el botón de la esquina superior izquierda (<SidebarTrigger className="inline-flex h-6 w-6 p-0 align-middle" />) o presionar <kbd className="px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">Ctrl+B</kbd> para colapsar la barra a modo iconos con tooltips.
+                          </p>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            <div className="p-4 rounded-xl border border-chrono-border bg-slate-50/50 dark:bg-slate-900/30">
+                              <p className="text-xs font-medium text-slate-400">Elementos Activos</p>
+                              <p className="text-xl font-bold mt-1">24 Módulos</p>
+                            </div>
+                            <div className="p-4 rounded-xl border border-chrono-border bg-slate-50/50 dark:bg-slate-900/30">
+                              <p className="text-xs font-medium text-slate-400">Estado de Red</p>
+                              <p className="text-xl font-bold mt-1 text-emerald-600 dark:text-emerald-400">Operacional</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </SidebarProvider>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
             {/* TAB: FEEDBACK, TOASTS & NOTIFICATIONS */}
             <TabsContent value="feedback" className="space-y-6">
