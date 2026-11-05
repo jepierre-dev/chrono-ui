@@ -3,6 +3,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils.js';
+import { useIsLoading } from '../../context/loading-context.js';
 
 export const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chrono-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-chrono-bg disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer',
@@ -44,6 +45,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
+  loadingId?: string | string[];
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
 }
@@ -56,6 +58,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       size,
       asChild = false,
       isLoading = false,
+      loadingId,
       startIcon,
       endIcon,
       children,
@@ -65,23 +68,26 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const Comp = asChild ? Slot : 'button';
+    const contextLoading = useIsLoading(loadingId);
+    const effectiveLoading = isLoading || contextLoading;
 
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        disabled={disabled || isLoading}
-        aria-busy={isLoading || undefined}
+        disabled={disabled || effectiveLoading}
+        aria-busy={effectiveLoading || undefined}
         {...props}
       >
-        {isLoading && <Loader2 className="h-4 w-4 animate-spin text-current" />}
-        {!isLoading && startIcon}
+        {effectiveLoading && <Loader2 className="h-4 w-4 animate-spin text-current" />}
+        {!effectiveLoading && startIcon}
         {children}
-        {!isLoading && endIcon}
+        {!effectiveLoading && endIcon}
       </Comp>
     );
   }
 );
 
 Button.displayName = 'Button';
+
 

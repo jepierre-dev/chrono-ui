@@ -29,7 +29,7 @@ export const CHRONO_COMPONENTS: Record<string, ComponentDoc> = {
   Button: {
     name: 'Button',
     category: 'Actions',
-    description: 'Componente interactivo para disparar acciones, formularios o enlaces accesibles.',
+    description: 'Componente interactivo para disparar acciones, formularios o enlaces accesibles con soporte nativo de loadingId.',
     importStatement: "import { Button } from '@chronosoft/ui';",
     variants: {
       variant: ['default', 'secondary', 'accent', 'destructive', 'outline', 'ghost', 'link'],
@@ -38,19 +38,84 @@ export const CHRONO_COMPONENTS: Record<string, ComponentDoc> = {
     props: [
       { name: 'variant', type: "'default' | 'secondary' | 'accent' | 'destructive' | 'outline' | 'ghost' | 'link'", defaultValue: "'default'", description: 'Jerarquía visual.' },
       { name: 'size', type: "'sm' | 'default' | 'lg' | 'icon' | 'icon-sm'", defaultValue: "'default'", description: 'Dimensiones.' },
-      { name: 'isLoading', type: 'boolean', defaultValue: 'false', description: 'Spinner accesible y deshabilitación durante peticiones asíncronas.' },
+      { name: 'isLoading', type: 'boolean', defaultValue: 'false', description: 'Spinner accesible y deshabilitación manual.' },
+      { name: 'loadingId', type: 'string | string[]', description: 'ID o lista de IDs del LoadingProvider para activar loading reactivamente.' },
       { name: 'startIcon', type: 'React.ReactNode', description: 'Icono a la izquierda.' },
       { name: 'endIcon', type: 'React.ReactNode', description: 'Icono a la derecha.' },
       { name: 'asChild', type: 'boolean', defaultValue: 'false', description: 'Composición mediante Radix Slot (ej. Next.js Link).' },
     ],
     bestPractices: {
-      dos: ['Usa variant="default" (Chrono Blue) para la acción principal.', 'Usa isLoading en llamadas asíncronas.'],
+      dos: [
+        'Usa loadingId="id-operacion" para sincronizar el estado de carga automáticamente con el LoadingContext sin useState manual.',
+        'Usa variant="default" (Chrono Blue) para la acción principal.',
+      ],
       donts: ['No uses elementos <button> HTML estándar.', 'No uses múltiples botones primarios por sección.'],
     },
     examples: [
       {
-        title: 'Botón con estado de carga',
-        code: `<Button variant="default" isLoading={saving} startIcon={<Save className="h-4 w-4" />}>Guardar Cambios</Button>`,
+        title: 'Botón con loadingId reactivo',
+        code: `<Button variant="default" loadingId="save-profile" startIcon={<Save className="h-4 w-4" />}>
+  Guardar Perfil
+</Button>`,
+      },
+    ],
+  },
+  LoadingProvider: {
+    name: 'LoadingProvider',
+    category: 'Feedback',
+    description: 'Contexto global de gestión de estados de carga por ID (Chronosoft Loading Engine). Permite a los componentes responder automáticamente a loadingId.',
+    importStatement: "import { LoadingProvider, useLoading, useIsLoading } from '@chronosoft/ui';",
+    props: [
+      { name: 'initialState', type: 'Record<string, boolean>', description: 'Estado inicial de IDs de carga.' },
+    ],
+    bestPractices: {
+      dos: [
+        'Envuelve tu aplicación o layout principal en <LoadingProvider>.',
+        'Usa withLoading(id, asyncFn) para que el estado se active y desactive solo sin bloque try/finally manual.',
+      ],
+      donts: ['No uses cientos de useState(false) cuando puedes usar withLoading("operacion", ...)'],
+    },
+    examples: [
+      {
+        title: 'Uso de withLoading en formulario',
+        code: `const { withLoading } = useLoading();
+
+const handleSave = () => {
+  withLoading('save-user', async () => {
+    await api.saveUser(data);
+    toast.success('Guardado');
+  });
+};
+
+return (
+  <Card loadingId="save-user">
+    <Button loadingId="save-user" onClick={handleSave}>Guardar</Button>
+  </Card>
+);`,
+      },
+    ],
+  },
+  LoadingOverlay: {
+    name: 'LoadingOverlay',
+    category: 'Feedback',
+    description: 'Capa translúcida con desenfoque suave (blur) y Spinner para cubrir contenedores, tablas o formularios mientras su loadingId esté activo.',
+    importStatement: "import { LoadingOverlay } from '@chronosoft/ui';",
+    props: [
+      { name: 'loadingId', type: 'string | string[]', description: 'ID a escuchar del LoadingProvider.' },
+      { name: 'message', type: 'string', description: 'Texto opcional animado (ej. "Procesando pago...").' },
+      { name: 'blur', type: "'sm' | 'md' | 'lg' | 'none'", defaultValue: "'sm'", description: 'Nivel de desenfoque de fondo.' },
+    ],
+    bestPractices: {
+      dos: ['Colócalo dentro de un contenedor con position: relative o usa Card con prop loadingId.'],
+      donts: ['No cubras toda la pantalla si solo una tarjeta o tabla se está actualizando.'],
+    },
+    examples: [
+      {
+        title: 'Overlay sobre tabla de datos',
+        code: `<div className="relative">
+  <LoadingOverlay loadingId="table-refresh" message="Cargando registros..." />
+  <DataTable data={data} />
+</div>`,
       },
     ],
   },

@@ -70,6 +70,10 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
+  LoadingProvider,
+  useLoading,
+  LoadingOverlay,
+  LoadingBoundary,
 } from '@chronosoft/ui';
 import {
   Sparkles,
@@ -98,6 +102,73 @@ import {
   CreditCard,
   Layers,
 } from 'lucide-react';
+
+function LoadingEngineDemo() {
+  const { withLoading, startLoading, stopLoading, isLoading } = useLoading();
+
+  const handleSimulatedAsync = () => {
+    withLoading('sync-demo', async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+      toast.success('Operación asíncrona completada con éxito');
+    });
+  };
+
+  return (
+    <Card loadingId="sync-demo" loadingMessage="Sincronizando con Chronosoft Engine...">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>Chronosoft Loading Engine API</CardTitle>
+          <Badge variant="accent" dot>Zero useState</Badge>
+        </div>
+        <CardDescription>
+          Todos los componentes escuchan automáticamente a <code>loadingId="sync-demo"</code> a través del <code>LoadingProvider</code>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-4 rounded-xl border border-chrono-border bg-slate-50/50 dark:bg-slate-900/30 space-y-2">
+            <span className="text-xs font-medium text-slate-500">Botón con loadingId</span>
+            <div className="flex gap-2">
+              <Button
+                variant="default"
+                loadingId="sync-demo"
+                onClick={handleSimulatedAsync}
+                startIcon={<Save className="h-4 w-4" />}
+              >
+                Disparar con withLoading()
+              </Button>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl border border-chrono-border bg-slate-50/50 dark:bg-slate-900/30 space-y-2">
+            <span className="text-xs font-medium text-slate-500">Control Manual de ID</span>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => startLoading('sync-demo')}
+              >
+                Activar ID
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-red-500 hover:text-red-600"
+                onClick={() => stopLoading('sync-demo')}
+              >
+                Detener ID
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-xs text-slate-400">
+          Estado actual: <code className="font-mono text-chrono-primary font-bold">{isLoading('sync-demo') ? 'true (Cargando)' : 'false (Inactivo)'}</code>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -150,8 +221,9 @@ export function App() {
   };
 
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-chrono-bg transition-colors duration-200">
+    <LoadingProvider>
+      <TooltipProvider>
+        <div className="min-h-screen bg-chrono-bg transition-colors duration-200">
         {/* Global Toast Notification Center */}
         <Toaster position="top-right" closeButton />
 
@@ -437,6 +509,7 @@ export function App() {
 
             {/* TAB: FEEDBACK, TOASTS & NOTIFICATIONS */}
             <TabsContent value="feedback" className="space-y-6">
+              <LoadingEngineDemo />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Toasts Interactive Playground */}
                 <Card>
@@ -813,5 +886,6 @@ export function App() {
         </main>
       </div>
     </TooltipProvider>
+  </LoadingProvider>
   );
 }

@@ -1,19 +1,27 @@
 import * as React from 'react';
 import { cn } from '../../lib/utils.js';
+import { LoadingOverlay } from '../loading/loading-overlay.js';
 
-export const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'rounded-xl border border-chrono-border bg-chrono-card text-chrono-card-fg shadow-sm transition-shadow hover:shadow-md',
-      className
-    )}
-    {...props}
-  />
-));
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  loadingId?: string | string[];
+  loadingMessage?: string;
+}
+
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, loadingId, loadingMessage, children, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'relative rounded-xl border border-chrono-border bg-chrono-card text-chrono-card-fg shadow-sm transition-shadow hover:shadow-md',
+        className
+      )}
+      {...props}
+    >
+      {loadingId && <LoadingOverlay loadingId={loadingId} message={loadingMessage} />}
+      {children}
+    </div>
+  )
+);
 Card.displayName = 'Card';
 
 export const CardHeader = React.forwardRef<
