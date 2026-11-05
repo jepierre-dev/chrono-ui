@@ -420,6 +420,134 @@ export const CHRONO_COMPONENTS: Record<string, ComponentDoc> = {
       },
     ],
   },
+  Toast: {
+    name: 'Toast',
+    category: 'Feedback',
+    description: 'Sistema integral de notificaciones toast (Sonner) con soporte de promesas, variantes de estado y acciones interactivas.',
+    importStatement: "import { toast, Toaster } from '@chronosoft/ui';",
+    props: [
+      { name: 'message', type: 'string', required: true, description: 'Título o mensaje del toast.' },
+      { name: 'description', type: 'string', description: 'Texto secundario explicativo.' },
+      { name: 'action', type: '{ label: string, onClick: () => void }', description: 'Botón de acción rápida (ej. Deshacer).' },
+    ],
+    bestPractices: {
+      dos: [
+        'Monta <Toaster position="top-right" /> una sola vez en el componente raíz (App o layout).',
+        'Usa toast.promise() para operaciones asíncronas con estados loading/success/error automáticos.',
+        'Usa toast.success() tras mutaciones exitosas.',
+      ],
+      donts: [
+        'No uses toasts para errores que requieran confirmación destructiva; para eso usa Dialog.',
+      ],
+    },
+    examples: [
+      {
+        title: 'Toast con Éxito y Error',
+        code: `// En el handler del botón:
+toast.success('Perfil actualizado correctamente');
+toast.error('No se pudo conectar al servidor');`,
+      },
+      {
+        title: 'Toast asíncrono con Promise',
+        code: `toast.promise(saveUserData(), {
+  loading: 'Sincronizando con Chronosoft...',
+  success: (data) => 'Datos guardados exitosamente',
+  error: 'Fallo al guardar los cambios',
+});`,
+      },
+    ],
+  },
+  Tooltip: {
+    name: 'Tooltip',
+    category: 'Feedback',
+    description: 'Etiqueta emergente accesible con Radix UI para proporcionar contexto inmediato al posar el cursor o enfocar con teclado.',
+    importStatement: "import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@chronosoft/ui';",
+    props: [
+      { name: 'content', type: 'React.ReactNode', required: true, description: 'Texto o elemento dentro del TooltipContent.' },
+      { name: 'side', type: "'top' | 'right' | 'bottom' | 'left'", defaultValue: "'top'", description: 'Posición relativa.' },
+    ],
+    bestPractices: {
+      dos: ['Añade Tooltip en botones de iconos que no tienen texto visible para garantizar accesibilidad.'],
+      donts: ['No coloques información crítica en un tooltip que sea inaccesible en móviles.'],
+    },
+    examples: [
+      {
+        title: 'Tooltip en botón de icono',
+        code: `<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4" /></Button>
+    </TooltipTrigger>
+    <TooltipContent>Eliminar elemento</TooltipContent>
+  </Tooltip>
+</TooltipProvider>`,
+      },
+    ],
+  },
+  Progress: {
+    name: 'Progress',
+    category: 'Feedback',
+    description: 'Barra de progreso animada con variantes semánticas y porcentaje numérico opcional.',
+    importStatement: "import { Progress } from '@chronosoft/ui';",
+    variants: {
+      variant: ['default', 'accent', 'success', 'warning', 'destructive'],
+    },
+    props: [
+      { name: 'value', type: 'number', defaultValue: '0', description: 'Porcentaje actual de 0 a 100.' },
+      { name: 'showValue', type: 'boolean', defaultValue: 'false', description: 'Muestra el número de porcentaje a la derecha.' },
+      { name: 'variant', type: 'string', defaultValue: "'default'", description: 'Tono de la barra.' },
+    ],
+    bestPractices: {
+      dos: ['Usa Progress para subida de archivos o completitud de perfil.'],
+      donts: ['No uses Progress para tareas de duración indefinida; para eso usa Spinner.'],
+    },
+    examples: [
+      {
+        title: 'Barra de carga de almacenamiento',
+        code: `<Progress value={68} showValue variant="accent" />`,
+      },
+    ],
+  },
+  Spinner: {
+    name: 'Spinner',
+    category: 'Feedback',
+    description: 'Indicador giratorio de carga con tamaños (sm, default, lg, xl) y variantes de color.',
+    importStatement: "import { Spinner } from '@chronosoft/ui';",
+    props: [
+      { name: 'size', type: "'sm' | 'default' | 'lg' | 'xl'", defaultValue: "'default'", description: 'Tamaño del spinner.' },
+      { name: 'variant', type: "'default' | 'primary' | 'accent' | 'white'", defaultValue: "'primary'", description: 'Color.' },
+    ],
+    bestPractices: {
+      dos: ['Úsalo dentro de tarjetas, modales o secciones mientras se resuelve una promesa.'],
+      donts: ['No lo uses en botones que ya tienen el prop isLoading.'],
+    },
+    examples: [
+      {
+        title: 'Spinner de carga de sección',
+        code: `<div className="flex justify-center p-8"><Spinner size="lg" variant="primary" /></div>`,
+      },
+    ],
+  },
+  Popover: {
+    name: 'Popover',
+    category: 'Overlay',
+    description: 'Panel flotante accesible para desplegar configuraciones rápidas, formularios inline o confirmaciones.',
+    importStatement: "import { Popover, PopoverTrigger, PopoverContent } from '@chronosoft/ui';",
+    props: [],
+    bestPractices: {
+      dos: ['Usa Popover para controles compactos que no justifican un Dialog completo.'],
+      donts: ['No anides Popovers dentro de Popovers.'],
+    },
+    examples: [
+      {
+        title: 'Popover de ajustes rápidos',
+        code: `<Popover>
+  <PopoverTrigger asChild><Button variant="outline">Ajustes</Button></PopoverTrigger>
+  <PopoverContent className="w-64 p-3"><p className="text-xs font-semibold">Opciones Rápidas</p></PopoverContent>
+</Popover>`,
+      },
+    ],
+  },
   Dialog: {
     name: 'Dialog',
     category: 'Overlay',

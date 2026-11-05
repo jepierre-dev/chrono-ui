@@ -19,10 +19,15 @@ export * from './components/app-header/app-header.js';
 export * from './components/filter-bar/filter-bar.js';
 export * from './components/stat-card/stat-card.js';
 
-// Feedback & Overlays
+// Feedback & Overlays (Rich user feedback)
+export * from './components/toast/toast.js';
 export * from './components/alert/alert.js';
 export * from './components/dialog/dialog.js';
 export * from './components/dropdown-menu/dropdown-menu.js';
+export * from './components/popover/popover.js';
+export * from './components/tooltip/tooltip.js';
+export * from './components/progress/progress.js';
+export * from './components/spinner/spinner.js';
 export * from './components/avatar/avatar.js';
 export * from './components/skeleton/skeleton.js';
 export * from './components/empty-state/empty-state.js';
