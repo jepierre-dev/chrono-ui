@@ -514,20 +514,108 @@ return (
       },
     ],
   },
-  Card: {
-    name: 'Card',
-    category: 'Layout',
-    description: 'Contenedor visual modular con encabezado, contenido y pie.',
-    importStatement: "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@chronosoft/ui';",
-    props: [],
+  Table: {
+    name: 'Table',
+    category: 'Data Display',
+    description: 'Conjunto de componentes de tabla estilizados y accesibles (Table, TableHeader, TableBody, TableRow, TableHead, TableCell) con soporte integrado de loadingId.',
+    importStatement: "import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell, TableCaption } from '@chronosoft/ui';",
+    props: [
+      { name: 'loadingId', type: 'string | string[]', description: 'ID de carga para mostrar LoadingOverlay automáticamente.' },
+    ],
     bestPractices: {
-      dos: ['Usa CardHeader, CardTitle y CardContent para jerarquía limpia.'],
-      donts: ['No anides Cards innecesariamente.'],
+      dos: ['Usa TableRow con hover automático para listas de datos densas.', 'Añade TableHead con encabezados descriptivos.'],
+      donts: ['No uses tablas para maquetar layouts generales; usa Grid o Flexbox.'],
     },
     examples: [
       {
-        title: 'Tarjeta básica',
-        code: `<Card><CardHeader><CardTitle>Título</CardTitle></CardHeader><CardContent>Contenido</CardContent></Card>`,
+        title: 'Tabla básica de usuarios',
+        code: `<Table loadingId="users-load">
+  <TableHeader>
+    <TableRow>
+      <TableHead>Nombre</TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Rol</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="font-medium">Carlos Ruiz</TableCell>
+      <TableCell>carlos@chronosoft.com</TableCell>
+      <TableCell><Badge variant="success">Admin</Badge></TableCell>
+    </TableRow>
+  </TableBody>
+</Table>`,
+      },
+    ],
+  },
+  Accordion: {
+    name: 'Accordion',
+    category: 'Layout',
+    description: 'Lista de secciones colapsables accesibles basada en Radix Accordion con animación fluida.',
+    importStatement: "import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@chronosoft/ui';",
+    props: [
+      { name: 'type', type: "'single' | 'multiple'", defaultValue: "'single'", description: 'Permite abrir una o varias secciones a la vez.' },
+      { name: 'collapsible', type: 'boolean', defaultValue: 'true', description: 'Permite cerrar el elemento activo haciendo clic nuevamente.' },
+    ],
+    bestPractices: {
+      dos: ['Ideal para preguntas frecuentes (FAQ) o acordeones de configuración detallada.'],
+      donts: ['No uses acordeones para contenidos principales que el usuario deba ver inmediatamente.'],
+    },
+    examples: [
+      {
+        title: 'Acordeón de Preguntas Frecuentes',
+        code: `<Accordion type="single" collapsible>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>¿Cómo se integra el servidor MCP?</AccordionTrigger>
+    <AccordionContent>Se agrega a la configuración de Cursor o Claude Desktop ejecutando el build de @chronosoft/mcp.</AccordionContent>
+  </AccordionItem>
+</Accordion>`,
+      },
+    ],
+  },
+  RadioGroup: {
+    name: 'RadioGroup',
+    category: 'Forms',
+    description: 'Conjunto de botones de opción excluyentes accesibles con labels y descripciones.',
+    importStatement: "import { RadioGroup, RadioGroupItem } from '@chronosoft/ui';",
+    props: [
+      { name: 'value', type: 'string', description: 'Opción seleccionada.' },
+      { name: 'onValueChange', type: '(val: string) => void', description: 'Callback de cambio.' },
+    ],
+    bestPractices: {
+      dos: ['Usa RadioGroup cuando hay entre 2 y 5 opciones visibles para comparar directamente.'],
+      donts: ['Si hay más de 5 opciones, prefiere un Select.'],
+    },
+    examples: [
+      {
+        title: 'Selección de plan',
+        code: `<RadioGroup defaultValue="pro">
+  <RadioGroupItem value="free" label="Plan Gratuito" description="Hasta 3 proyectos" />
+  <RadioGroupItem value="pro" label="Plan Profesional" description="Proyectos ilimitados y soporte 24/7" />
+</RadioGroup>`,
+      },
+    ],
+  },
+  Slider: {
+    name: 'Slider',
+    category: 'Forms',
+    description: 'Control deslizante numérico accesible con pista, relleno de color y thumb táctil.',
+    importStatement: "import { Slider } from '@chronosoft/ui';",
+    props: [
+      { name: 'value', type: 'number[]', description: 'Valor controlado.' },
+      { name: 'min', type: 'number', defaultValue: '0', description: 'Mínimo.' },
+      { name: 'max', type: 'number', defaultValue: '100', description: 'Máximo.' },
+      { name: 'step', type: 'number', defaultValue: '1', description: 'Incremento por paso.' },
+      { name: 'showValue', type: 'boolean', defaultValue: 'false', description: 'Muestra el número actual.' },
+    ],
+    bestPractices: {
+      dos: ['Usa Slider para volumen, presupuestos o selección de rangos continuos.'],
+      donts: ['No lo uses si se requiere precisión exacta de números (usa Input type="number").'],
+    },
+    examples: [
+      {
+        title: 'Slider de presupuesto',
+        code: `<Slider label="Presupuesto Mensual" showValue defaultValue={[50]} min={0} max={100} />`,
       },
     ],
   },

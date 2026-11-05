@@ -12,15 +12,19 @@ export * from './components/input/input.js';
 export * from './components/textarea/textarea.js';
 export * from './components/select/select.js';
 export * from './components/checkbox/checkbox.js';
+export * from './components/radio-group/radio-group.js';
 export * from './components/switch/switch.js';
+export * from './components/slider/slider.js';
 export * from './components/date-picker/date-picker.js';
 export * from './components/date-picker/date-range-picker.js';
 
-// Layout & Navigation (Sidebars, Headers, Breadcrumbs)
+// Layout & Navigation (Sidebars, Headers, Tables, Breadcrumbs)
 export * from './components/sidebar/sidebar.js';
 export * from './components/breadcrumb/breadcrumb.js';
 export * from './components/app-header/app-header.js';
 export * from './components/filter-bar/filter-bar.js';
+export * from './components/table/table.js';
+export * from './components/accordion/accordion.js';
 export * from './components/card/card.js';
 export * from './components/separator/separator.js';
 export * from './components/tabs/tabs.js';

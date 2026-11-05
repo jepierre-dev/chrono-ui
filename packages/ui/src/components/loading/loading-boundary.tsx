@@ -27,3 +27,4 @@ export function LoadingBoundary({
 
   return <>{children}</>;
 }
+

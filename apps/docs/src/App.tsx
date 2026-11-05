@@ -74,6 +74,19 @@ import {
   useLoading,
   LoadingOverlay,
   LoadingBoundary,
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+  RadioGroup,
+  RadioGroupItem,
+  Slider,
 } from '@chronosoft/ui';
 import {
   Sparkles,
@@ -709,6 +722,18 @@ export function App() {
                         label="Forzar autenticación MFA para este perfil"
                         description="Aumenta los requisitos de seguridad en cada inicio"
                       />
+
+                      <div className="pt-2 border-t border-chrono-border space-y-2">
+                        <label className="text-xs font-medium text-slate-500 block">Tipo de Facturación (RadioGroup)</label>
+                        <RadioGroup defaultValue="monthly">
+                          <RadioGroupItem value="monthly" label="Mensual ($29/mes)" description="Cancela cuando quieras" />
+                          <RadioGroupItem value="annual" label="Anual ($290/año)" description="2 meses gratis incluidos" />
+                        </RadioGroup>
+                      </div>
+
+                      <div className="pt-2 border-t border-chrono-border">
+                        <Slider label="Capacidad de Almacenamiento (GB)" showValue defaultValue={[100]} max={500} />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -736,6 +761,25 @@ export function App() {
                         placeholder="Describe los requerimientos del proyecto..."
                         helperText="Máximo 500 caracteres"
                       />
+                    </div>
+
+                    {/* Accordion Showcase */}
+                    <div className="md:col-span-2 pt-2 border-t border-chrono-border">
+                      <label className="text-xs font-medium text-slate-500 mb-2 block">Preguntas Frecuentes (Accordion)</label>
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="faq-1">
+                          <AccordionTrigger>¿Cómo se integra el servidor MCP con Cursor o Claude?</AccordionTrigger>
+                          <AccordionContent>
+                            Basta con añadir el ejecutable compilado de @chronosoft/mcp en tu archivo de configuración de servidores MCP stdio.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="faq-2">
+                          <AccordionTrigger>¿Cómo funciona el Chronosoft Loading Engine?</AccordionTrigger>
+                          <AccordionContent>
+                            Conectas un LoadingProvider en la raíz y cualquier componente con loadingId reacciona automáticamente sin necesidad de useState manual.
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </div>
                   </CardContent>
                 </Card>
@@ -776,45 +820,43 @@ export function App() {
                     }
                   />
 
-                  {/* Simulated Table */}
-                  <div className="rounded-xl border border-chrono-border overflow-hidden">
-                    <table className="w-full text-left text-sm">
-                      <thead className="border-b border-chrono-border bg-slate-50 dark:bg-slate-900/50 text-xs font-semibold text-slate-500">
-                        <tr>
-                          <th className="p-3.5">Colaborador</th>
-                          <th className="p-3.5">Rol</th>
-                          <th className="p-3.5">Estado</th>
-                          <th className="p-3.5 text-right">Detalles</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-chrono-border">
-                        <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors">
-                          <td className="p-3.5 font-medium">Sofía Castro</td>
-                          <td className="p-3.5 text-slate-500">Product Designer</td>
-                          <td className="p-3.5">
-                            <Badge variant="success" dot>Activo</Badge>
-                          </td>
-                          <td className="p-3.5 text-right">
-                            <Button variant="ghost" size="sm" onClick={() => toast('Detalles de Sofía Castro')}>
-                              Ver
-                            </Button>
-                          </td>
-                        </tr>
-                        <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors">
-                          <td className="p-3.5 font-medium">Mateo Rivas</td>
-                          <td className="p-3.5 text-slate-500">Backend Lead</td>
-                          <td className="p-3.5">
-                            <Badge variant="accent">En revisión</Badge>
-                          </td>
-                          <td className="p-3.5 text-right">
-                            <Button variant="ghost" size="sm" onClick={() => toast('Detalles de Mateo Rivas')}>
-                              Ver
-                            </Button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  {/* Official Chronosoft Table Component */}
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Colaborador</TableHead>
+                        <TableHead>Rol</TableHead>
+                        <TableHead>Estado</TableHead>
+                        <TableHead className="text-right">Detalles</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">Sofía Castro</TableCell>
+                        <TableCell className="text-slate-500">Product Designer</TableCell>
+                        <TableCell>
+                          <Badge variant="success" dot>Activo</Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" onClick={() => toast('Detalles de Sofía Castro')}>
+                            Ver
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Mateo Rivas</TableCell>
+                        <TableCell className="text-slate-500">Backend Lead</TableCell>
+                        <TableCell>
+                          <Badge variant="accent">En revisión</Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" onClick={() => toast('Detalles de Mateo Rivas')}>
+                            Ver
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
 
