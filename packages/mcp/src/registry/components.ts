@@ -9,7 +9,7 @@ export interface ComponentPropDoc {
 export interface ComponentDoc {
   name: string;
   description: string;
-  category: 'Actions' | 'Forms' | 'Data Display' | 'Layout' | 'Feedback' | 'Overlay';
+  category: 'Actions' | 'Forms' | 'Data Display' | 'Layout' | 'Feedback' | 'Overlay' | 'Magic';
   importStatement: string;
   props: ComponentPropDoc[];
   variants?: {
@@ -36,261 +36,405 @@ export const CHRONO_COMPONENTS: Record<string, ComponentDoc> = {
       size: ['sm', 'default', 'lg', 'icon', 'icon-sm'],
     },
     props: [
-      {
-        name: 'variant',
-        type: "'default' | 'secondary' | 'accent' | 'destructive' | 'outline' | 'ghost' | 'link'",
-        defaultValue: "'default'",
-        description: 'Estilo visual de acuerdo con la jerarquía de la acción.',
-      },
-      {
-        name: 'size',
-        type: "'sm' | 'default' | 'lg' | 'icon' | 'icon-sm'",
-        defaultValue: "'default'",
-        description: 'Tamaño del botón.',
-      },
-      {
-        name: 'isLoading',
-        type: 'boolean',
-        defaultValue: 'false',
-        description: 'Muestra un spinner accesible y deshabilita el botón.',
-      },
-      {
-        name: 'startIcon',
-        type: 'React.ReactNode',
-        description: 'Icono a la izquierda del texto.',
-      },
-      {
-        name: 'endIcon',
-        type: 'React.ReactNode',
-        description: 'Icono a la derecha del texto.',
-      },
-      {
-        name: 'asChild',
-        type: 'boolean',
-        defaultValue: 'false',
-        description: 'Permite componer el botón como un enlace o elemento custom mediante Radix Slot.',
-      },
+      { name: 'variant', type: "'default' | 'secondary' | 'accent' | 'destructive' | 'outline' | 'ghost' | 'link'", defaultValue: "'default'", description: 'Jerarquía visual.' },
+      { name: 'size', type: "'sm' | 'default' | 'lg' | 'icon' | 'icon-sm'", defaultValue: "'default'", description: 'Dimensiones.' },
+      { name: 'isLoading', type: 'boolean', defaultValue: 'false', description: 'Spinner accesible y deshabilitación durante peticiones asíncronas.' },
+      { name: 'startIcon', type: 'React.ReactNode', description: 'Icono a la izquierda.' },
+      { name: 'endIcon', type: 'React.ReactNode', description: 'Icono a la derecha.' },
+      { name: 'asChild', type: 'boolean', defaultValue: 'false', description: 'Composición mediante Radix Slot (ej. Next.js Link).' },
     ],
     bestPractices: {
-      dos: [
-        'Usa variant="default" (azul Chrono) únicamente para la acción principal por vista.',
-        'Acompaña acciones destructivas o irreversibles con variant="destructive".',
-        'Usa isLoading durante peticiones asíncronas para prevenir doble envío.',
-      ],
-      donts: [
-        'No uses múltiples botones primarios en el mismo bloque visual.',
-        'No reemplaces Button con elementos <button> HTML estándar.',
-      ],
+      dos: ['Usa variant="default" (Chrono Blue) para la acción principal.', 'Usa isLoading en llamadas asíncronas.'],
+      donts: ['No uses elementos <button> HTML estándar.', 'No uses múltiples botones primarios por sección.'],
     },
     examples: [
       {
-        title: 'Botón Primario con Icono y Loading',
-        code: `<Button variant="default" isLoading={isSubmitting} startIcon={<Save className="h-4 w-4" />}>
-  Guardar Cambios
-</Button>`,
+        title: 'Botón con estado de carga',
+        code: `<Button variant="default" isLoading={saving} startIcon={<Save className="h-4 w-4" />}>Guardar Cambios</Button>`,
       },
+    ],
+  },
+  ShimmerButton: {
+    name: 'ShimmerButton',
+    category: 'Magic',
+    description: 'Botón de alto impacto visual con animación perimetral de resplandor (efecto Magic UI). Ideal para CTAs y Hero sections.',
+    importStatement: "import { ShimmerButton } from '@chronosoft/ui';",
+    props: [
+      { name: 'shimmerColor', type: 'string', defaultValue: "'#ffffff'", description: 'Color del rayo perimetral.' },
+      { name: 'shimmerDuration', type: 'string', defaultValue: "'3s'", description: 'Velocidad de rotación del brillo.' },
+      { name: 'borderRadius', type: 'string', defaultValue: "'0.75rem'", description: 'Radio de bordes.' },
+    ],
+    bestPractices: {
+      dos: ['Úsalo para el Call-To-Action más importante de tu landing o vista de conversión.'],
+      donts: ['No llenes una misma página con múltiples ShimmerButtons.'],
+    },
+    examples: [
       {
-        title: 'Botón como enlace Next.js/React Router',
-        code: `<Button asChild variant="outline">
-  <Link href="/dashboard">Ir al Dashboard</Link>
-</Button>`,
+        title: 'CTA Principal',
+        code: `<ShimmerButton onClick={handleUpgrade}>\n  Comenzar Prueba Gratis ✨\n</ShimmerButton>`,
+      },
+    ],
+  },
+  Select: {
+    name: 'Select',
+    category: 'Forms',
+    description: 'Menú desplegable accesible con Radix UI para selección única con filtrado y scroll automático.',
+    importStatement: "import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from '@chronosoft/ui';",
+    props: [
+      { name: 'value', type: 'string', description: 'Valor seleccionado actual.' },
+      { name: 'onValueChange', type: '(val: string) => void', description: 'Callback al cambiar de opción.' },
+      { name: 'disabled', type: 'boolean', description: 'Deshabilita la interacción.' },
+    ],
+    bestPractices: {
+      dos: ['Usa SelectItem dentro de SelectContent.', 'Usa SelectValue con placeholder descriptivo.'],
+      donts: ['No uses <select> nativo en aplicaciones Chronosoft.'],
+    },
+    examples: [
+      {
+        title: 'Selector de Rol',
+        code: `<Select value={role} onValueChange={setRole}>
+  <SelectTrigger className="w-56">
+    <SelectValue placeholder="Seleccionar rol" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="admin">Administrador</SelectItem>
+    <SelectItem value="editor">Editor</SelectItem>
+    <SelectItem value="viewer">Lector</SelectItem>
+  </SelectContent>
+</Select>`,
+      },
+    ],
+  },
+  DatePicker: {
+    name: 'DatePicker',
+    category: 'Forms',
+    description: 'Selector de fecha individual con calendario emergente, localización en español y atajo "Hoy".',
+    importStatement: "import { DatePicker } from '@chronosoft/ui';",
+    props: [
+      { name: 'value', type: 'Date | undefined', description: 'Fecha seleccionada.' },
+      { name: 'onChange', type: '(date: Date | undefined) => void', description: 'Manejador de cambio de fecha.' },
+      { name: 'placeholder', type: 'string', defaultValue: "'Seleccionar fecha...'", description: 'Texto placeholder.' },
+    ],
+    bestPractices: {
+      dos: ['Usa DatePicker para fechas de nacimiento, vencimientos o eventos puntuales.'],
+      donts: ['No uses inputs tipo date nativos que varían entre navegadores.'],
+    },
+    examples: [
+      {
+        title: 'Fecha de entrega',
+        code: `<DatePicker value={dueDate} onChange={setDueDate} placeholder="Fecha límite de entrega" />`,
+      },
+    ],
+  },
+  DateRangePicker: {
+    name: 'DateRangePicker',
+    category: 'Forms',
+    description: 'Selector de rango de fechas (from/to) con presets rápidos ("7 días", "30 días", "Este mes") para analítica y filtros.',
+    importStatement: "import { DateRangePicker, type DateRange } from '@chronosoft/ui';",
+    props: [
+      { name: 'value', type: 'DateRange | undefined', description: 'Objeto { from?: Date, to?: Date }.' },
+      { name: 'onChange', type: '(range: DateRange | undefined) => void', description: 'Callback de selección.' },
+    ],
+    bestPractices: {
+      dos: ['Ideal para dashboards analíticos y reportes con intervalos de tiempo.'],
+      donts: ['No uses dos DatePickers separados si el objetivo es un rango continuo.'],
+    },
+    examples: [
+      {
+        title: 'Filtro de reportes',
+        code: `<DateRangePicker value={range} onChange={setRange} />`,
+      },
+    ],
+  },
+  FilterBar: {
+    name: 'FilterBar',
+    category: 'Layout',
+    description: 'Barra completa de filtros para tablas y catálogos: búsqueda en vivo, chips activos eliminables, botón de reset y contador.',
+    importStatement: "import { FilterBar, type FilterChip } from '@chronosoft/ui';",
+    props: [
+      { name: 'searchValue', type: 'string', description: 'Valor del input de búsqueda.' },
+      { name: 'onSearchChange', type: '(val: string) => void', description: 'Manejador de cambio de búsqueda.' },
+      { name: 'activeFilters', type: 'FilterChip[]', description: 'Array de { id, label, value }.' },
+      { name: 'onRemoveFilter', type: '(id: string) => void', description: 'Eliminación individual de chip.' },
+      { name: 'onClearAll', type: '() => void', description: 'Restablecer todos los filtros.' },
+      { name: 'totalResults', type: 'number', description: 'Contador de elementos coincidentes.' },
+    ],
+    bestPractices: {
+      dos: ['Colócalo siempre en la parte superior de tablas de datos y listas paginadas.'],
+      donts: ['No reinventes chips de filtros individuales con divs manuales.'],
+    },
+    examples: [
+      {
+        title: 'Barra de filtros de usuarios',
+        code: `<FilterBar
+  searchValue={query}
+  onSearchChange={setQuery}
+  activeFilters={[{ id: 'role', label: 'Rol', value: 'Admin' }]}
+  onRemoveFilter={handleRemove}
+  onClearAll={handleClear}
+  totalResults={42}
+/>`,
+      },
+    ],
+  },
+  AppHeader: {
+    name: 'AppHeader',
+    category: 'Layout',
+    description: 'Encabezado corporativo responsivo con soporte de marca, atajo de búsqueda global ⌘K, notificaciones y menú de usuario.',
+    importStatement: "import { AppHeader } from '@chronosoft/ui';",
+    props: [
+      { name: 'brand', type: 'React.ReactNode', description: 'Logo o componente de identidad.' },
+      { name: 'user', type: 'UserProfile', description: '{ name, email, avatarUrl }.' },
+      { name: 'notificationsCount', type: 'number', description: 'Contador del badge de notificaciones.' },
+      { name: 'onSearchClick', type: '() => void', description: 'Apertura de modal de búsqueda rápida Cmd+K.' },
+      { name: 'onLogout', type: '() => void', description: 'Acción de cierre de sesión.' },
+    ],
+    bestPractices: {
+      dos: ['Usa sticky top-0 para navegación fija en aplicaciones SaaS.'],
+      donts: ['No sobrecargues el header con demasiados links; delega al Sidebar.'],
+    },
+    examples: [
+      {
+        title: 'Header de plataforma',
+        code: `<AppHeader
+  brand={<span className="font-bold text-lg text-chrono-primary">Chronosoft</span>}
+  user={{ name: 'Alex Pérez', email: 'alex@chronosoft.com' }}
+  notificationsCount={3}
+  onSearchClick={() => setOpenCmdK(true)}
+  onLogout={handleLogout}
+/>`,
+      },
+    ],
+  },
+  StatCard: {
+    name: 'StatCard',
+    category: 'Data Display',
+    description: 'Tarjeta de métrica KPI con valor numérico, indicador porcentual de tendencia (+/-), sparkline mini-gráfico y soporte de highlight.',
+    importStatement: "import { StatCard } from '@chronosoft/ui';",
+    props: [
+      { name: 'title', type: 'string', required: true, description: 'Etiqueta del KPI.' },
+      { name: 'value', type: 'string | number', required: true, description: 'Valor actual.' },
+      { name: 'change', type: 'number', description: 'Porcentaje de cambio (+/-).' },
+      { name: 'sparklineData', type: 'number[]', description: 'Array de números para graficar barras mini.' },
+      { name: 'highlight', type: 'boolean', description: 'Borde sutil con tono de acento Chrono.' },
+    ],
+    bestPractices: {
+      dos: ['Agrupa varias StatCards en un grid responsivo (grid-cols-1 md:grid-cols-3).'],
+      donts: ['No pongas textos extensos en el título.'],
+    },
+    examples: [
+      {
+        title: 'Métrica de Ingresos',
+        code: `<StatCard
+  title="Ingresos Recurrentes (MRR)"
+  value="$48,250"
+  change={12.5}
+  sparklineData={[30, 45, 60, 50, 70, 90, 100]}
+  highlight
+/>`,
+      },
+    ],
+  },
+  Tabs: {
+    name: 'Tabs',
+    category: 'Layout',
+    description: 'Navegación por pestañas accesible basada en Radix Tabs con animación sutil de activación.',
+    importStatement: "import { Tabs, TabsList, TabsTrigger, TabsContent } from '@chronosoft/ui';",
+    props: [
+      { name: 'defaultValue', type: 'string', description: 'Tab activo por defecto.' },
+      { name: 'value', type: 'string', description: 'Valor controlado.' },
+      { name: 'onValueChange', type: '(tab: string) => void', description: 'Callback de cambio.' },
+    ],
+    bestPractices: {
+      dos: ['Usa Tabs para alternar vistas secundarias sin recargar la página.'],
+      donts: ['No uses más de 5 pestañas en pantallas móviles.'],
+    },
+    examples: [
+      {
+        title: 'Pestañas de Cuenta',
+        code: `<Tabs defaultValue="general">
+  <TabsList>
+    <TabsTrigger value="general">General</TabsTrigger>
+    <TabsTrigger value="billing">Facturación</TabsTrigger>
+  </TabsList>
+  <TabsContent value="general"><p>Ajustes generales</p></TabsContent>
+  <TabsContent value="billing"><p>Planes y facturas</p></TabsContent>
+</Tabs>`,
+      },
+    ],
+  },
+  Checkbox: {
+    name: 'Checkbox',
+    category: 'Forms',
+    description: 'Caja de selección accesible con label y descripción integrados.',
+    importStatement: "import { Checkbox } from '@chronosoft/ui';",
+    props: [
+      { name: 'checked', type: 'boolean', description: 'Estado marcado.' },
+      { name: 'onCheckedChange', type: '(checked: boolean) => void', description: 'Callback de cambio.' },
+      { name: 'label', type: 'React.ReactNode', description: 'Texto del label.' },
+      { name: 'description', type: 'string', description: 'Texto explicativo inferior.' },
+    ],
+    bestPractices: {
+      dos: ['Usa siempre label descriptivo.'],
+      donts: ['No uses checkbox para alternar estados inmediatos que corresponden a un Switch.'],
+    },
+    examples: [
+      {
+        title: 'Aceptar términos',
+        code: `<Checkbox label="Acepto los términos de servicio" description="Requerido para continuar" />`,
+      },
+    ],
+  },
+  Switch: {
+    name: 'Switch',
+    category: 'Forms',
+    description: 'Interruptor toggle para ajustes y preferencias con activación inmediata.',
+    importStatement: "import { Switch } from '@chronosoft/ui';",
+    props: [
+      { name: 'checked', type: 'boolean', description: 'Estado activado.' },
+      { name: 'onCheckedChange', type: '(checked: boolean) => void', description: 'Callback.' },
+      { name: 'label', type: 'React.ReactNode', description: 'Etiqueta.' },
+      { name: 'description', type: 'string', description: 'Texto de ayuda.' },
+    ],
+    bestPractices: {
+      dos: ['Ideal para toggles de configuración (modo oscuro, notificaciones push).'],
+      donts: ['No lo uses en formularios largos que requieran un botón final de "Guardar".'],
+    },
+    examples: [
+      {
+        title: 'Toggle de notificaciones',
+        code: `<Switch label="Notificaciones por email" description="Recibe alertas en tiempo real" />`,
+      },
+    ],
+  },
+  EmptyState: {
+    name: 'EmptyState',
+    category: 'Feedback',
+    description: 'Contenedor visual para listas vacías, búsquedas sin resultados o estados iniciales.',
+    importStatement: "import { EmptyState } from '@chronosoft/ui';",
+    props: [
+      { name: 'icon', type: 'React.ReactNode', description: 'Icono representativo.' },
+      { name: 'title', type: 'string', required: true, description: 'Título principal.' },
+      { name: 'description', type: 'string', description: 'Mensaje descriptivo.' },
+      { name: 'actionLabel', type: 'string', description: 'Texto del botón de acción.' },
+      { name: 'onAction', type: '() => void', description: 'Callback del botón.' },
+    ],
+    bestPractices: {
+      dos: ['Orienta siempre al usuario sobre cuál es el siguiente paso para añadir contenido.'],
+      donts: ['No dejes una tabla vacía sin feedback visual.'],
+    },
+    examples: [
+      {
+        title: 'Sin proyectos creados',
+        code: `<EmptyState
+  icon={<FolderPlus className="h-6 w-6" />}
+  title="Aún no tienes proyectos"
+  description="Crea tu primer proyecto para comenzar a colaborar."
+  actionLabel="Crear Proyecto"
+  onAction={handleCreate}
+/>`,
       },
     ],
   },
   Badge: {
     name: 'Badge',
     category: 'Data Display',
-    description: 'Etiqueta pequeña para comunicar estados, categorías o contadores.',
+    description: 'Etiqueta para comunicar estados, categorías o contadores.',
     importStatement: "import { Badge } from '@chronosoft/ui';",
     variants: {
       variant: ['default', 'secondary', 'accent', 'destructive', 'success', 'warning', 'outline'],
     },
     props: [
-      {
-        name: 'variant',
-        type: "'default' | 'secondary' | 'accent' | 'destructive' | 'success' | 'warning' | 'outline'",
-        defaultValue: "'default'",
-        description: 'Tono semántico de la etiqueta.',
-      },
-      {
-        name: 'dot',
-        type: 'boolean',
-        defaultValue: 'false',
-        description: 'Muestra un indicador circular de estado pulsante.',
-      },
+      { name: 'variant', type: 'string', defaultValue: "'default'", description: 'Tono semántico.' },
+      { name: 'dot', type: 'boolean', defaultValue: 'false', description: 'Indicador circular pulsante.' },
     ],
     bestPractices: {
-      dos: [
-        'Usa variant="success" para estados activos o exitosos.',
-        'Usa dot={true} para indicar estado de conexión o monitoreo en tiempo real.',
-      ],
-      donts: ['No uses Badge como botón clickeable principal.'],
+      dos: ['Usa variant="success" con dot={true} para estado conectado/activo.'],
+      donts: ['No uses Badge como botón de acción principal.'],
     },
     examples: [
       {
-        title: 'Badge de Estado en Línea',
-        code: `<Badge variant="success" dot>
-  Sistema Activo
-</Badge>`,
+        title: 'Badge con punto de estado',
+        code: `<Badge variant="success" dot>En línea</Badge>`,
       },
     ],
   },
   Input: {
     name: 'Input',
     category: 'Forms',
-    description: 'Campo de entrada de texto enriquecido con soporte de iconos, helperText y mensajes de validación.',
+    description: 'Campo de texto con soporte de iconos, helperText y estados de error.',
     importStatement: "import { Input } from '@chronosoft/ui';",
     props: [
-      {
-        name: 'error',
-        type: 'boolean',
-        defaultValue: 'false',
-        description: 'Marca el borde en rojo y activa el estado de error.',
-      },
-      {
-        name: 'errorMessage',
-        type: 'string',
-        description: 'Texto descriptivo del error a corregir.',
-      },
-      {
-        name: 'helperText',
-        type: 'string',
-        description: 'Texto de ayuda o instrucción inferior.',
-      },
-      {
-        name: 'startIcon',
-        type: 'React.ReactNode',
-        description: 'Icono colocado dentro del input a la izquierda.',
-      },
-      {
-        name: 'endIcon',
-        type: 'React.ReactNode',
-        description: 'Icono colocado dentro del input a la derecha.',
-      },
+      { name: 'error', type: 'boolean', defaultValue: 'false', description: 'Borde rojo de error.' },
+      { name: 'errorMessage', type: 'string', description: 'Mensaje de validación.' },
+      { name: 'startIcon', type: 'React.ReactNode', description: 'Icono izquierdo.' },
+      { name: 'endIcon', type: 'React.ReactNode', description: 'Icono derecho.' },
     ],
     bestPractices: {
-      dos: [
-        'Proporciona siempre placeholder y label o helperText claro.',
-        'Muestra errorMessage tan pronto falle la validación.',
-      ],
-      donts: ['No dejes el input sin etiqueta o descripción accesible.'],
+      dos: ['Proporciona siempre placeholder y label o helperText.'],
+      donts: ['No uses <input> estándar sin estilo.'],
     },
     examples: [
       {
-        title: 'Input de Búsqueda con Icono',
-        code: `<Input
-  placeholder="Buscar registros..."
-  startIcon={<Search className="h-4 w-4" />}
-  helperText="Presiona Enter para filtrar"
-/>`,
+        title: 'Input con Icono',
+        code: `<Input placeholder="Buscar..." startIcon={<Search className="h-4 w-4" />} />`,
       },
     ],
   },
   Card: {
     name: 'Card',
     category: 'Layout',
-    description: 'Contenedor visual modular con encabezado, contenido y pie para agrupar información relevante.',
+    description: 'Contenedor visual modular con encabezado, contenido y pie.',
     importStatement: "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@chronosoft/ui';",
     props: [],
     bestPractices: {
-      dos: [
-        'Organiza vistas dashboard y formularios complejos dentro de Cards estructurados.',
-        'Usa CardHeader para agrupar CardTitle y CardDescription de manera uniforme.',
-      ],
-      donts: ['No anides Cards innecesariamente uno dentro de otro a menos que sea un grid.'],
+      dos: ['Usa CardHeader, CardTitle y CardContent para jerarquía limpia.'],
+      donts: ['No anides Cards innecesariamente.'],
     },
     examples: [
       {
-        title: 'Tarjeta de Cuenta de Usuario',
-        code: `<Card>
-  <CardHeader>
-    <CardTitle>Configuración de Seguridad</CardTitle>
-    <CardDescription>Administra tus credenciales de acceso</CardDescription>
-  </CardHeader>
-  <CardContent>
-    <p className="text-sm">Autenticación de dos factores: Habilitada</p>
-  </CardContent>
-  <CardFooter>
-    <Button variant="outline">Cambiar Clave</Button>
-  </CardFooter>
-</Card>`,
+        title: 'Tarjeta básica',
+        code: `<Card><CardHeader><CardTitle>Título</CardTitle></CardHeader><CardContent>Contenido</CardContent></Card>`,
       },
     ],
   },
   Alert: {
     name: 'Alert',
     category: 'Feedback',
-    description: 'Mensajes contextuales destacados para advertencias, errores o información importante.',
+    description: 'Mensajes contextuales destacados con iconos semánticos automáticos.',
     importStatement: "import { Alert, AlertTitle, AlertDescription } from '@chronosoft/ui';",
     variants: {
       variant: ['default', 'info', 'success', 'warning', 'destructive'],
     },
     props: [
-      {
-        name: 'variant',
-        type: "'default' | 'info' | 'success' | 'warning' | 'destructive'",
-        defaultValue: "'default'",
-        description: 'Nivel de severidad del mensaje.',
-      },
-      {
-        name: 'hideIcon',
-        type: 'boolean',
-        defaultValue: 'false',
-        description: 'Oculta el icono semántico por defecto.',
-      },
+      { name: 'variant', type: 'string', defaultValue: "'default'", description: 'Nivel de severidad.' },
     ],
     bestPractices: {
-      dos: [
-        'Usa variant="destructive" para errores críticos de sistema o permisos denegados.',
-        'Usa variant="warning" para advertir antes de acciones con consecuencias.',
-      ],
-      donts: ['No uses Alert para notificaciones temporales que deberían ser Toast.'],
+      dos: ['Usa variant="destructive" para errores críticos de sistema.'],
+      donts: ['No uses Alert para notificaciones efímeras tipo Toast.'],
     },
     examples: [
       {
-        title: 'Alerta de Error de Servidor',
-        code: `<Alert variant="destructive">
-  <AlertTitle>Fallo en la sincronización</AlertTitle>
-  <AlertDescription>No fue posible comunicarse con la API de Chronosoft. Reintente en 5 minutos.</AlertDescription>
-</Alert>`,
+        title: 'Alerta informativa',
+        code: `<Alert variant="info"><AlertTitle>Mantenimiento</AlertTitle><AlertDescription>El sistema se actualizará a las 02:00 AM.</AlertDescription></Alert>`,
       },
     ],
   },
   Dialog: {
     name: 'Dialog',
     category: 'Overlay',
-    description: 'Ventana modal accesible construida sobre Radix UI con bloqueo de scroll, foco atrapado y accesibilidad completa.',
+    description: 'Ventana modal accesible basada en Radix UI con foco atrapado y bloqueo de scroll.',
     importStatement: "import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@chronosoft/ui';",
     props: [],
     bestPractices: {
-      dos: [
-        'Provee siempre un DialogTitle y DialogDescription para lectores de pantalla.',
-        'Coloca botones de acción de confirmación y cancelación en el DialogFooter.',
-      ],
-      donts: ['No satures los modales con flujos de más de 3 pasos.'],
+      dos: ['Incluye siempre DialogTitle y DialogDescription para a11y.'],
+      donts: ['No uses modales para flujos de más de 3 pasos.'],
     },
     examples: [
       {
-        title: 'Modal de Confirmación de Eliminación',
-        code: `<Dialog>
-  <DialogTrigger asChild>
-    <Button variant="destructive">Eliminar Proyecto</Button>
-  </DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>¿Confirmar eliminación?</DialogTitle>
-      <DialogDescription>Esta acción no se puede deshacer.</DialogDescription>
-    </DialogHeader>
-    <DialogFooter>
-      <DialogClose asChild>
-        <Button variant="outline">Cancelar</Button>
-      </DialogClose>
-      <Button variant="destructive">Sí, Eliminar</Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>`,
+        title: 'Modal de Confirmación',
+        code: `<Dialog><DialogTrigger asChild><Button>Abrir</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Confirmar</DialogTitle></DialogHeader></DialogContent></Dialog>`,
       },
     ],
   },
 };
-

@@ -7,121 +7,164 @@ export interface RecipeDoc {
 }
 
 export const CHRONO_RECIPES: Record<string, RecipeDoc> = {
-  'auth-login': {
-    name: 'auth-login',
-    title: 'Tarjeta de Inicio de Sesión Corporativo',
-    description: 'Formulario estándar de autenticación de Chronosoft con Card, Input, Button y manejo de estados.',
-    componentsUsed: ['Card', 'CardHeader', 'CardTitle', 'CardDescription', 'CardContent', 'CardFooter', 'Input', 'Button', 'Alert'],
+  'data-table-with-filters': {
+    name: 'data-table-with-filters',
+    title: 'Tabla de Datos Empresarial con Barra de Filtros y Rango de Fechas',
+    description: 'Patrón integral para gestión de listas y tablas SaaS con FilterBar, DateRangePicker, Badges de estado y acciones.',
+    componentsUsed: ['FilterBar', 'DateRangePicker', 'Badge', 'Button', 'Card', 'CardContent', 'Select'],
     code: `import React, { useState } from 'react';
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-  Input,
+  FilterBar,
+  DateRangePicker,
+  type DateRange,
+  Badge,
   Button,
-  Alert,
-  AlertDescription,
+  Card,
+  CardContent,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from '@chronosoft/ui';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Download, MoreHorizontal } from 'lucide-react';
 
-export function ChronoLoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+export function UserManagementTable() {
+  const [search, setSearch] = useState('');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [role, setRole] = useState('all');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      // Llamada de autenticación
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch {
-      setError('Credenciales inválidas. Por favor verifique sus datos.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const activeFilters = [
+    ...(role !== 'all' ? [{ id: 'role', label: 'Rol', value: role.toUpperCase() }] : []),
+    ...(dateRange?.from ? [{ id: 'dates', label: 'Fechas', value: 'Rango activo' }] : []),
+  ];
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50 dark:bg-slate-950">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-chrono-primary">Chronosoft</CardTitle>
-          <CardDescription>Inicia sesión en tu espacio de trabajo</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            <Input
-              type="email"
-              placeholder="nombre@chronosoft.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              startIcon={<Mail className="h-4 w-4" />}
-              required
-            />
-            <Input
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              startIcon={<Lock className="h-4 w-4" />}
-              required
-            />
-          </CardContent>
-          <CardFooter className="flex flex-col gap-3">
-            <Button type="submit" variant="default" className="w-full" isLoading={loading} startIcon={<LogIn className="h-4 w-4" />}>
-              Iniciar Sesión
+    <div className="space-y-4">
+      {/* Filter Bar */}
+      <FilterBar
+        searchValue={search}
+        onSearchChange={setSearch}
+        activeFilters={activeFilters}
+        onRemoveFilter={(id) => {
+          if (id === 'role') setRole('all');
+          if (id === 'dates') setDateRange(undefined);
+        }}
+        onClearAll={() => {
+          setSearch('');
+          setRole('all');
+          setDateRange(undefined);
+        }}
+        totalResults={128}
+        filterActions={
+          <>
+            <Select value={role} onValueChange={setRole}>
+              <SelectTrigger className="w-36 h-10">
+                <SelectValue placeholder="Filtrar Rol" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los roles</SelectItem>
+                <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="member">Miembro</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="w-64">
+              <DateRangePicker value={dateRange} onChange={setDateRange} />
+            </div>
+
+            <Button variant="outline" startIcon={<Download className="h-4 w-4" />}>
+              Exportar
             </Button>
-            <Button variant="link" className="text-xs">
-              ¿Olvidaste tu contraseña?
-            </Button>
-          </CardFooter>
-        </form>
+          </>
+        }
+      />
+
+      {/* Table Card Container */}
+      <Card>
+        <CardContent className="p-0">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-chrono-border bg-slate-50 dark:bg-slate-900/50 text-xs font-semibold text-slate-500">
+              <tr>
+                <th className="p-4">Usuario</th>
+                <th className="p-4">Rol</th>
+                <th className="p-4">Estado</th>
+                <th className="p-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-chrono-border">
+              <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors">
+                <td className="p-4 font-medium text-chrono-fg">Camila Morales</td>
+                <td className="p-4 text-slate-500">Admin</td>
+                <td className="p-4">
+                  <Badge variant="success" dot>Activo</Badge>
+                </td>
+                <td className="p-4 text-right">
+                  <Button variant="ghost" size="icon-sm">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </CardContent>
       </Card>
     </div>
   );
 }`,
   },
-  'dashboard-metric-card': {
-    name: 'dashboard-metric-card',
-    title: 'Tarjeta de Métrica KPI para Dashboard',
-    description: 'Tarjeta de métrica con Badge de tendencia positiva/negativa y tipografía visual.',
-    componentsUsed: ['Card', 'CardHeader', 'CardTitle', 'CardContent', 'Badge'],
+  'analytics-dashboard': {
+    name: 'analytics-dashboard',
+    title: 'Dashboard de Analítica con AppHeader y StatCards',
+    description: 'Vista completa de panel de control con métricas, gráficos sparkline, banner Hero y atajo de búsqueda.',
+    componentsUsed: ['AppHeader', 'StatCard', 'ShimmerButton', 'Alert', 'Tabs'],
     code: `import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Badge } from '@chronosoft/ui';
-import { TrendingUp, Users } from 'lucide-react';
+import { AppHeader, StatCard, ShimmerButton, Alert, AlertTitle, AlertDescription } from '@chronosoft/ui';
+import { Sparkles, DollarSign, Users, Activity } from 'lucide-react';
 
-export function MetricCard() {
+export function AnalyticsDashboard() {
   return (
-    <Card className="w-80">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-slate-500">Usuarios Activos</CardTitle>
-        <div className="rounded-md bg-chrono-primary/10 p-2 text-chrono-primary">
-          <Users className="h-4 w-4" />
+    <div className="min-h-screen bg-chrono-bg">
+      <AppHeader
+        brand={<div className="font-bold text-lg text-chrono-primary">Chronosoft Cloud</div>}
+        user={{ name: 'Laura Gómez', email: 'laura@chronosoft.com' }}
+        notificationsCount={4}
+        onSearchClick={() => console.log('Abrir Cmd+K')}
+        actions={
+          <ShimmerButton className="h-9 px-4 text-xs">
+            Upgrade Plan ✨
+          </ShimmerButton>
+        }
+      />
+
+      <main className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <StatCard
+            title="Ingresos Recurrentes"
+            value="$128,450"
+            change={18.2}
+            icon={<DollarSign className="h-5 w-5" />}
+            sparklineData={[30, 45, 55, 60, 75, 90, 100]}
+            highlight
+          />
+          <StatCard
+            title="Usuarios Nuevos"
+            value="3,420"
+            change={5.4}
+            icon={<Users className="h-5 w-5" />}
+            sparklineData={[40, 30, 50, 70, 60, 80, 85]}
+          />
+          <StatCard
+            title="Tasa de Retención"
+            value="98.7%"
+            change={-0.3}
+            icon={<Activity className="h-5 w-5" />}
+            sparklineData={[99, 98, 99, 97, 98, 99, 98]}
+          />
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-3xl font-bold tracking-tight">14,289</div>
-        <div className="mt-2 flex items-center gap-2">
-          <Badge variant="success" dot>
-            +18.4%
-          </Badge>
-          <span className="text-xs text-slate-500">vs el mes anterior</span>
-        </div>
-      </CardContent>
-    </Card>
+      </main>
+    </div>
   );
 }`,
   },
 };
-

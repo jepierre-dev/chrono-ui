@@ -92,3 +92,4 @@ Añade lo siguiente a tu configuración MCP:
 - **Card**: Contenedores modulares (`CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`).
 - **Dialog**: Modales accesibles basados en Radix UI (`DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogFooter`, `DialogClose`).
 - **Alert**: Mensajes contextuales con iconos semánticos automáticos y variantes informativas/destructivas.
+
