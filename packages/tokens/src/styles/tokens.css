@@ -1,0 +1,66 @@
+:root {
+  --chrono-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  /* Brand Colors Light */
+  --chrono-bg: #ffffff;
+  --chrono-fg: #0f172a;
+  
+  --chrono-card: #ffffff;
+  --chrono-card-fg: #0f172a;
+  
+  --chrono-popover: #ffffff;
+  --chrono-popover-fg: #0f172a;
+  
+  --chrono-primary: #0284c7;
+  --chrono-primary-fg: #ffffff;
+  
+  --chrono-secondary: #f1f5f9;
+  --chrono-secondary-fg: #0f172a;
+  
+  --chrono-muted: #f8fafc;
+  --chrono-muted-fg: #64748b;
+  
+  --chrono-accent: #06b6d4;
+  --chrono-accent-fg: #ffffff;
+  
+  --chrono-destructive: #ef4444;
+  --chrono-destructive-fg: #ffffff;
+  
+  --chrono-border: #e2e8f0;
+  --chrono-input: #e2e8f0;
+  --chrono-ring: #0284c7;
+  
+  --chrono-radius: 0.5rem;
+}
+
+.dark {
+  /* Brand Colors Dark */
+  --chrono-bg: #090d16;
+  --chrono-fg: #f8fafc;
+  
+  --chrono-card: #0f172a;
+  --chrono-card-fg: #f8fafc;
+  
+  --chrono-popover: #0f172a;
+  --chrono-popover-fg: #f8fafc;
+  
+  --chrono-primary: #38bdf8;
+  --chrono-primary-fg: #082f49;
+  
+  --chrono-secondary: #1e293b;
+  --chrono-secondary-fg: #f8fafc;
+  
+  --chrono-muted: #1e293b;
+  --chrono-muted-fg: #94a3b8;
+  
+  --chrono-accent: #22d3ee;
+  --chrono-accent-fg: #083344;
+  
+  --chrono-destructive: #f87171;
+  --chrono-destructive-fg: #450a0a;
+  
+  --chrono-border: #334155;
+  --chrono-input: #334155;
+  --chrono-ring: #38bdf8;
+}
+
