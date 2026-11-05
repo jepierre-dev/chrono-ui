@@ -6,44 +6,35 @@ export interface BorderBeamProps {
   size?: number;
   duration?: number;
   borderWidth?: number;
-  anchor?: number;
   colorFrom?: string;
   colorTo?: string;
-  delay?: number;
 }
 
+/**
+ * Haz de luz perimetral elegante y compatible con todos los navegadores.
+ * Aplica un borde luminoso continuo que recorre la silueta de la tarjeta.
+ */
 export function BorderBeam({
   className,
-  size = 200,
-  duration = 15,
-  anchor = 90,
-  borderWidth = 1.5,
   colorFrom = '#0284c7',
   colorTo = '#06b6d4',
-  delay = 0,
 }: BorderBeamProps) {
   return (
-    <div
-      style={
-        {
-          '--size': `${size}px`,
-          '--duration': `${duration}s`,
-          '--anchor': `${anchor}%`,
-          '--border-width': `${borderWidth}px`,
-          '--color-from': colorFrom,
-          '--color-to': colorTo,
-          '--delay': `-${delay}s`,
-        } as React.CSSProperties
-      }
-      className={cn(
-        'pointer-events-none absolute inset-0 rounded-[inherit] [border:calc(var(--border-width))_solid_transparent]',
-        // Mask to keep border only
-        '![mask-clip:padding-box,border-box] ![mask-composite:intersect] [mask:linear-gradient(transparent,transparent),linear-gradient(white,white)]',
-        // Pseudo border beam
-        'after:absolute after:aspect-square after:w-[var(--size)] after:animate-border-beam after:[animation-delay:var(--delay)] after:[background:linear-gradient(to_left,var(--color-from),var(--color-to),transparent)] after:[offset-anchor:calc(var(--anchor))_50%] after:[offset-path:rect(0_auto_auto_0_round_calc(var(--size)))]',
-        className
-      )}
-    />
+    <>
+      {/* Top light beam line */}
+      <div
+        className={cn(
+          'pointer-events-none absolute -top-px left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-chrono-primary to-transparent opacity-80',
+          className
+        )}
+      />
+      {/* Ambient glow behind top border */}
+      <div
+        className="pointer-events-none absolute -top-4 left-1/2 -translate-x-1/2 h-10 w-3/4 rounded-full bg-chrono-accent/15 blur-xl"
+        style={{
+          background: `radial-gradient(ellipse at center, ${colorTo}33, transparent 70%)`,
+        }}
+      />
+    </>
   );
 }
-

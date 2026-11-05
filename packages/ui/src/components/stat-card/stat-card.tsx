@@ -31,11 +31,15 @@ export function StatCard({
     <Card
       className={cn(
         'relative overflow-hidden transition-all duration-200 hover:shadow-lg',
-        highlight && 'border-chrono-primary/50 ring-1 ring-chrono-primary/20',
+        highlight &&
+          'border-chrono-primary/40 bg-gradient-to-b from-sky-500/[0.03] to-transparent dark:from-sky-500/[0.06] dark:to-transparent',
         className
       )}
       {...props}
     >
+      {highlight && (
+        <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-chrono-primary to-transparent" />
+      )}
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
           {title}

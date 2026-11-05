@@ -52,15 +52,9 @@ export const chronoTailwindPreset = {
         ...chronoShadows,
       },
       keyframes: {
-        'border-beam': {
-          '100%': {
-            'offset-distance': '100%',
-          },
-        },
-        'shimmer-slide': {
-          to: {
-            transform: 'translate(calc(100cqw - 100%), 0)',
-          },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
         },
         'accordion-down': {
           from: { height: '0' },
