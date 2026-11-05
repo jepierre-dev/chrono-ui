@@ -96,6 +96,7 @@ export function FilterBar({
                 {onRemoveFilter && (
                   <button
                     type="button"
+                    aria-label={`Eliminar filtro ${filter.label}: ${filter.value}`}
                     onClick={() => onRemoveFilter(filter.id)}
                     className="cursor-pointer ml-1 rounded-full p-0.5 hover:bg-slate-300 dark:hover:bg-slate-700"
                   >

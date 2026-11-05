@@ -7,11 +7,11 @@ import {
   eachDayOfInterval,
   isSameDay,
   isWithinInterval,
-  isAfter,
   isBefore,
   addMonths,
   subMonths,
   subDays,
+  getDay,
 } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -41,10 +41,13 @@ export function DateRangePicker({
   const [open, setOpen] = React.useState(false);
   const [currentMonth, setCurrentMonth] = React.useState(value?.from || new Date());
 
-  const daysInMonth = React.useMemo(() => {
+  const { daysInMonth, startOffset } = React.useMemo(() => {
     const start = startOfMonth(currentMonth);
     const end = endOfMonth(currentMonth);
-    return eachDayOfInterval({ start, end });
+    return {
+      daysInMonth: eachDayOfInterval({ start, end }),
+      startOffset: getDay(start),
+    };
   }, [currentMonth]);
 
   const handleDayClick = (day: Date) => {
@@ -86,6 +89,7 @@ export function DateRangePicker({
             className
           )}
           startIcon={<CalendarIcon className="h-4 w-4 text-slate-400" />}
+          aria-label={`Rango de fechas: ${displayText}`}
         >
           {displayText}
         </Button>
@@ -145,6 +149,7 @@ export function DateRangePicker({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                aria-label="Mes anterior"
                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -152,6 +157,7 @@ export function DateRangePicker({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                aria-label="Mes siguiente"
                 onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
               >
                 <ChevronRight className="h-4 w-4" />
@@ -170,9 +176,9 @@ export function DateRangePicker({
             <span>Sá</span>
           </div>
 
-          {/* Days Grid */}
-          <div className="grid grid-cols-7 gap-1">
-            {daysInMonth.map((day) => {
+          {/* Days Grid with precise column start offset */}
+          <div className="grid grid-cols-7 gap-1" role="grid">
+            {daysInMonth.map((day, idx) => {
               const isStart = value?.from && isSameDay(day, value.from);
               const isEnd = value?.to && isSameDay(day, value.to);
               const isInRange =
@@ -184,14 +190,17 @@ export function DateRangePicker({
                 <button
                   key={day.toISOString()}
                   type="button"
+                  style={idx === 0 ? { gridColumnStart: startOffset + 1 } : undefined}
                   onClick={() => handleDayClick(day)}
+                  aria-label={format(day, 'PPPP', { locale: es })}
                   className={cn(
-                    'h-8 w-8 rounded-lg text-xs font-medium transition-colors hover:bg-chrono-primary/10 hover:text-chrono-primary flex items-center justify-center cursor-pointer',
+                    'h-8 w-8 text-xs font-medium transition-colors hover:bg-chrono-primary/10 hover:text-chrono-primary flex items-center justify-center cursor-pointer rounded-lg',
                     isInRange && 'bg-chrono-primary/15 text-chrono-primary rounded-none',
                     isStart &&
-                      'bg-chrono-primary text-white hover:bg-chrono-primary hover:text-white rounded-l-lg',
+                      'bg-chrono-primary text-white hover:bg-chrono-primary hover:text-white rounded-l-lg rounded-r-none font-semibold',
                     isEnd &&
-                      'bg-chrono-primary text-white hover:bg-chrono-primary hover:text-white rounded-r-lg'
+                      'bg-chrono-primary text-white hover:bg-chrono-primary hover:text-white rounded-r-lg rounded-l-none font-semibold',
+                    isStart && isEnd && 'rounded-lg'
                   )}
                 >
                   {format(day, 'd')}
@@ -199,9 +208,25 @@ export function DateRangePicker({
               );
             })}
           </div>
+
+          {/* Actions */}
+          {value?.from && (
+            <div className="pt-3 border-t border-chrono-border mt-3 flex justify-end">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-red-500 hover:text-red-600"
+                onClick={() => {
+                  onChange?.(undefined);
+                  setOpen(false);
+                }}
+              >
+                Limpiar Selección
+              </Button>
+            </div>
+          )}
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>
     </PopoverPrimitive.Root>
   );
 }
-

@@ -9,6 +9,7 @@ import {
   isToday,
   addMonths,
   subMonths,
+  getDay,
 } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -33,10 +34,13 @@ export function DatePicker({
   const [open, setOpen] = React.useState(false);
   const [currentMonth, setCurrentMonth] = React.useState(value || new Date());
 
-  const daysInMonth = React.useMemo(() => {
+  const { daysInMonth, startOffset } = React.useMemo(() => {
     const start = startOfMonth(currentMonth);
     const end = endOfMonth(currentMonth);
-    return eachDayOfInterval({ start, end });
+    return {
+      daysInMonth: eachDayOfInterval({ start, end }),
+      startOffset: getDay(start), // 0 para domingo, 1 para lunes, etc.
+    };
   }, [currentMonth]);
 
   const handleSelect = (date: Date) => {
@@ -56,6 +60,7 @@ export function DatePicker({
             className
           )}
           startIcon={<CalendarIcon className="h-4 w-4 text-slate-400" />}
+          aria-label={value ? `Fecha seleccionada: ${format(value, 'PPP', { locale: es })}` : placeholder}
         >
           {value ? format(value, 'PPP', { locale: es }) : placeholder}
         </Button>
@@ -75,6 +80,7 @@ export function DatePicker({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                aria-label="Mes anterior"
                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -82,6 +88,7 @@ export function DatePicker({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                aria-label="Mes siguiente"
                 onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
               >
                 <ChevronRight className="h-4 w-4" />
@@ -100,9 +107,9 @@ export function DatePicker({
             <span>Sá</span>
           </div>
 
-          {/* Days Grid */}
-          <div className="grid grid-cols-7 gap-1">
-            {daysInMonth.map((day) => {
+          {/* Days Grid with precise column start offset */}
+          <div className="grid grid-cols-7 gap-1" role="grid">
+            {daysInMonth.map((day, idx) => {
               const selected = value && isSameDay(day, value);
               const today = isToday(day);
 
@@ -110,12 +117,15 @@ export function DatePicker({
                 <button
                   key={day.toISOString()}
                   type="button"
+                  style={idx === 0 ? { gridColumnStart: startOffset + 1 } : undefined}
                   onClick={() => handleSelect(day)}
+                  aria-label={format(day, 'PPPP', { locale: es })}
+                  aria-selected={selected || undefined}
                   className={cn(
                     'h-8 w-8 rounded-lg text-xs font-medium transition-colors hover:bg-chrono-primary/10 hover:text-chrono-primary flex items-center justify-center cursor-pointer',
                     selected &&
-                      'bg-chrono-primary text-white hover:bg-chrono-primary hover:text-white',
-                    today && !selected && 'border border-chrono-primary/50 text-chrono-primary'
+                      'bg-chrono-primary text-white hover:bg-chrono-primary hover:text-white shadow-xs',
+                    today && !selected && 'border border-chrono-primary/50 text-chrono-primary font-semibold'
                   )}
                 >
                   {format(day, 'd')}
@@ -124,7 +134,7 @@ export function DatePicker({
             })}
           </div>
 
-          {/* Today shortcut */}
+          {/* Actions shortcut */}
           <div className="pt-3 border-t border-chrono-border mt-3 flex justify-between">
             <Button
               variant="ghost"
@@ -157,4 +167,3 @@ export function DatePicker({
     </PopoverPrimitive.Root>
   );
 }
-
