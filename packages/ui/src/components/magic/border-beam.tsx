@@ -6,6 +6,7 @@ export interface BorderBeamProps {
   size?: number;
   duration?: number;
   borderWidth?: number;
+  delay?: number;
   colorFrom?: string;
   colorTo?: string;
 }
@@ -18,6 +19,10 @@ export function BorderBeam({
   className,
   colorFrom = '#0284c7',
   colorTo = '#06b6d4',
+  size,
+  duration,
+  borderWidth,
+  delay,
 }: BorderBeamProps) {
   return (
     <>
